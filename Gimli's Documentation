@@ -1,0 +1,56 @@
+Sample Gimli Program:
+start
+int x;
+read x;
+print x+3-17;
+if x > 6 then print "greater than 6";
+else print "not greater than 6";
+;
+while x>5
+x=x-1;
+print x;
+end;
+
+
+Grammar for Gimli
+
+Here is the grammar for Gimli, written in a form on BNF. Note that "program" is the start symbol in this grammar.
+
+program :	startStmt statements endStmt
+statements : statement ( ";" statement) *
+statement : declaration | assignmentStmt | readStmt | printStmt | call_stmt |ifStmt
+startStmt	: "start"
+endStmt : "end"
+ifStmt : "if" expr "then" statements "else" statements
+whileStmt	: "while" expr statements end
+declaration	:	("function" | "int" | "float") identifierList
+call_stmt	:	identifier "(" argumentList ")"
+argumentList : argument | (argument "," argumentList)
+argument	:	expr
+read_stmt	:	"read" (identifier)+
+print_stmt	: "print" (string | expr)+
+assignmentStmt	:	identifier "="	expr
+expr : expr relOps expr
+expr : expr logicalOps expr 
+expr	:	"(" expr ")"
+expr : term addop factor
+expr	: term
+addop	: "+" | "-"
+term	:	factor multop term
+term	: factor
+multop	: "*" | "/" | "%"
+relOps : "<" | "==" | ">"
+logicalOps : "and" | "or" | "not"
+factor :	identifier | constant
+
+in the Lex file, make sure you have rules for
+
+identifier
+
+string, e.g. "I am a boring string"
+
+integer constants
+
+comment "/* a bunch of text */", "/*"[a-zA-Z 0-9]*"*/"
+
+operators and other terminals that appear in the grammar, such as "(" ")" "+" etc.
